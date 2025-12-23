@@ -28,9 +28,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --force-reinstall numpy==1.26.4 huggingface_hub==0.21.4
 
-# Download Hallo models from HuggingFace (RunPod servers = fast!)
+# Download ALL Hallo models from HuggingFace to correct path
+# Models: hallo, stable-diffusion-v1-5, motion_module, face_analysis, wav2vec, audio_separator, sd-vae-ft-mse
 RUN python -c "from huggingface_hub import snapshot_download; \
-    snapshot_download('fudan-generative-ai/hallo', local_dir='pretrained_models/hallo')"
+    snapshot_download('fudan-generative-ai/hallo', local_dir='pretrained_models')"
 
 # Download InsightFace models
 RUN python -c "from insightface.app import FaceAnalysis; \
@@ -43,6 +44,7 @@ RUN python -c "import face_alignment; \
 
 # Verify setup
 RUN python -c "import numpy; print(f'NumPy version: {numpy.__version__}')"
+RUN ls -la /app/hallo/pretrained_models/
 
 WORKDIR /app
 COPY handler.py /app/handler.py
